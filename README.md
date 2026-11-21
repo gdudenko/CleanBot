@@ -1,71 +1,99 @@
-# CleanBot
+# CleanBot — русская локализация
 
-A clean interface to manage Playerbots on WotLK 3.3.5a Servers. No more complex trees of buttons!
+**WoW 3.3.5a (12340) · Interface 30300 · Lua 5.1 · AzerothCore / Playerbots**
 
-⚠️Requires the latest version of [Playerbots](https://github.com/mod-playerbots/mod-playerbots) installed on your server⚠️
+Русская локализация **CleanBot 0.13** — удобного интерфейса для управления
+Playerbots без дерева кнопок и ручных команд.
 
-- Fully Skinned for [ElvUI](https://github.com/ElvUI-WotLK/ElvUI/tree/master) or the default UI
-    - Automatically Switches
-- Compatible Optional Extras:
-    - [Multibot Bridge Server Module](https://github.com/Wishmaster117/mod-multibot-bridge) - Removes some of the whisper spam and speeds up query/action time
-    - [Talented](https://warperia.com/addon-wotlk/talented/) - Opens the large three panel talent tree for bots
+> **Оригинальный проект:** [bennybroseph/CleanBot](https://github.com/bennybroseph/CleanBot)
+> **Автор оригинала:** Jake James (GitHub: **BennyBroseph**)
+> **Лицензия:** MIT
+>
+> Это независимый форк. Он не связан с автором оригинала; все права на исходный
+> аддон принадлежат ему. Изменения распространяются на условиях MIT.
 
-# Manage Tab
-- Invite/Uninvite, Login/Logout bots
-- Group Revive, Release, Eat/Drink, Maintenence, Summon
-- Create Custom Presets, Invite All From Preset
-- Link an Account for Altbot Usage
-    - Invite Linked Account, Unlink Account
-- Fully Collapsable Sections
+## Что это
 
-<img width="300" alt="image" src="https://github.com/user-attachments/assets/147bb107-6b97-46b8-9d1c-80d9f928672b" />
+Полный русский интерфейс CleanBot 0.13: вкладки, подсказки, диалоги, настройки,
+стратегии, журнал заданий, инвентарь, торговля, рекрутинг и отладочные окна.
+Перевод сделан поверх оригинального кода — структура аддона и протокол общения
+с сервером не менялись.
 
-# Individual Tab
-- Manage Individual Bots Within Your Party or Raid
-- Set Combat, Non-Combat, and Class Specific Strategies
-- Target Party/Raid Members to Swap to Them
-- Manage gear through drag and drop or context menus
-    - View Gold and Items in an intuitive and familiar interface
-    - Open Bank (if nearby a banker) or Sell Grays (if near a vendor)
+## Что переведено
 
-<img width="500" alt="image" src="https://github.com/user-attachments/assets/dc808972-03ca-414a-8a1a-70af408bcb1b" />
-<img width="300" alt="603430857-b9f2179f-db59-44a8-880e-b999b6505b41" src="https://github.com/user-attachments/assets/e747a2d9-e461-402c-97ad-d386d6e49ec6" />
+| Область | Результат |
+|---|---|
+| Интерфейс | Вкладки Manage / Individual / Group, мини-бар, контекстные меню, всплывающие подсказки, диалоги подтверждения |
+| Стратегии | Названия и описания боевых, небоевых и классовых стратегий, подписи «нет значения» и групповые заголовки |
+| Классы и роли | Отображаемые названия классов и ролей |
+| Инвентарь | Экипировка, использование, перемещение, продажа, банк, гильд-банк, уничтожение предметов |
+| Журнал заданий | Список заданий, требования, награды, описание, кнопка отказа |
+| Рекрутинг и торговля | Форма рекрутинга, статусы, диалоги торговца |
+| Настройки и отладка | Панель настроек, отладочные окна, подсказки на миникарте |
+| Команды | Вывод `/cleanbot`, `/cbdebug` и справка по командам |
 
-## Quest Log
-- Check Failed, Incomplete, and Completed Quests
-    - Read quest text and requirements directly for any quest you both share
-- Abandon Bot Quests
+Словарь `Loc.lua` содержит **689 записей**. Таблицы-данные (стратегии,
+классы, подписи полей) переведены в `Localize.lua` на этапе загрузки.
 
-<img width="700" alt="image" src="https://github.com/user-attachments/assets/083d79cc-d36a-443e-bc55-7d21d037e57f" />
+**Что осталось на английском намеренно:** токены команд, поля протокола
+шёпота и служебные ключи. Их нельзя переводить — иначе аддон перестанет
+понимать сервер. Ответы сервера и имена ботов тоже приходят как есть.
 
-# Group Tab
-- Multiselect groups and bots using the standard windows shortcuts
-    - CTRL + Click to add/remove selection
-    - Shift + Click for range selection
-- Add groups, rename them,
-- Add bots to the group via name or by current target
-- Dynamic default groups for class and role
-    - With multiselect, these groups may be all you need to perfectly manage your next raid
+## Установка
 
-<img width="700" alt="image" src="https://github.com/user-attachments/assets/35b672aa-a48c-4b41-805d-12ebec7209dc" />
+1. Скачайте этот репозиторий: **Code → Download ZIP** (или `git clone`).
+2. Скопируйте папку **`CleanBot`** в `Interface/AddOns` клиента WoW 3.3.5a.
+3. Проверьте путь: `Interface/AddOns/CleanBot/CleanBot.toc`.
+4. Включите **CleanBot** в списке аддонов и зайдите в игру.
+5. Откройте окно командой `/cleanbot` или кнопкой на миникарте.
 
-# Mini Action Bar
-- Freely Movable, Snappable, Disableable, and Reorderable
-- Revive/Release
-- Follow/Stay/Runaway
-- Toggle Passive
-- Pull and Attack
-- Summon
+Требования:
 
-<img width="300" alt="image" src="https://github.com/user-attachments/assets/30a522cf-69bc-4505-8c6c-29e0e81ea82f" />
+- сервер с модулем [Playerbots](https://github.com/mod-playerbots/mod-playerbots);
+- по желанию — [Multibot Bridge](https://github.com/Wishmaster117/mod-multibot-bridge)
+  (меньше шёпота и быстрее ответы) и Talented (большое дерево талантов ботов).
 
-# Settings Tab
-- Change Transparency, Scale, Accent Color, and Layout Values
-- Enable or Disable a /wave from the bot when selecting them in the UI
+Настройки сохраняются в `WTF`; при обновлении не удаляйте эту папку.
 
-<img width="300" alt="image" src="https://github.com/user-attachments/assets/8036f2c4-d192-45d8-828b-e56a3f771a8c" />
+## Совместимость
 
-# Automatic Actions
-- Open Bot Inventory on Trade
-    - Drag and Drop Items to Trade
-    - Right Click Items to Remove
+- WoW **3.3.5a (12340)**, `## Interface: 30300`, Lua 5.1.
+- CleanBot **0.13**, AzerothCore / Playerbots.
+- Структура файлов и версия аддона (0.13) не менялись; в `.toc` добавлены
+  `Loc.lua` и `Localize.lua`, а в код — обёртки перевода отображаемых строк.
+
+## Технические детали
+
+- `Loc.lua` — словарь точных строк и правил для составных подписей,
+  загружается до `CleanBot.lua`; `NS.CB_L` возвращает перевод или исходную строку.
+- `Localize.lua` — обход таблиц-данных и перевод только отображаемых полей
+  (`name`, `desc`, `header`, `label`, `text` и т.п.); токены и ключи не трогаются.
+- В `CleanBot.lua` добавлен безопасный fallback `NS.CB_L`, чтобы модуль
+  работал и без `Loc.lua` (например, в юнит-тестах).
+- Вызовы `SetText`, подсказки и `string.format` обёрнуты в `NS.CB_L`;
+  многострочные тексты переводятся построчно.
+
+## Проверка
+
+```bash
+luajit spec/run.lua
+# 183 passed, 0 failed
+```
+
+Юнит-тесты оригинала проходят без изменений: логика парсинга, протокола и
+состояний не затронута.
+
+## Авторство и лицензия
+
+- **Оригинальный аддон:** CleanBot 0.13, автор **Jake James (BennyBroseph)** —
+  [github.com/bennybroseph/CleanBot](https://github.com/bennybroseph/CleanBot).
+- **Лицензия:** [MIT](LICENSE), Copyright (c) 2026 Jake James.
+  Форк распространяется на тех же условиях.
+- Если вы автор оригинала и хотите перенести локализацию в upstream —
+  issues и pull request'ы приветствуются.
+
+## Ссылки
+
+- [Оригинальный репозиторий](https://github.com/bennybroseph/CleanBot)
+- [Issues этого форка](https://github.com/gdudenko/CleanBot/issues)
+- [English guide (upstream)](README.en.md)
