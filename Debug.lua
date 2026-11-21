@@ -33,7 +33,7 @@ local function CB_FormatKnownBots()
     local count = 0
     for key, bot in pairs(CleanBot_PartyBots) do
         count = count + 1
-        lines[#lines + 1] = string.format("[%d]  %s  (%s)", count, bot.name or key, bot.class or "?")
+        lines[#lines + 1] = string.format(NS.CB_L("[%d]  %s  (%s)"), count, bot.name or key, bot.class or "?")
         if bot.combat then
             local active, inactive, unknown = {}, {}, {}
             for field, val in pairs(bot.combat) do
@@ -84,7 +84,7 @@ NS.CB_ShowDebugKnownBots = function()
 
         local title = f:CreateFontString(nil, "OVERLAY", "GameFontNormal")
         title:SetPoint("TOP", f, "TOP", 0, -8)
-        title:SetText("CleanBot — KnownBots")
+        title:SetText(NS.CB_L("CleanBot — KnownBots"))
 
         local closeBtn = NS.CB_CreateButton(f, nil, "Close", 80, 22, function() f:Hide() end)
         closeBtn:SetPoint("BOTTOM", f, "BOTTOM", 0, 6)
@@ -112,7 +112,7 @@ NS.CB_ShowDebugKnownBots = function()
 
     local f   = debugKnownBotsFrame
     local txt = f.textObj
-    txt:SetText(CB_FormatKnownBots())
+    txt:SetText(NS.CB_L(CB_FormatKnownBots()))
     f.scrollChild:SetHeight(math.max(txt:GetStringHeight() + 8, 1))
     f:SetHeight(winH)
     f:Show()
@@ -127,7 +127,7 @@ SLASH_CBFRAMES1 = "/cbframes"
 SlashCmdList["CBFRAMES"] = function()
     local focus = GetMouseFocus and GetMouseFocus()
     if focus then
-        print(string.format("MouseFocus: %s  strata=%s  level=%d  mouseEnabled=%s",
+        print(string.format(NS.CB_L("MouseFocus: %s  strata=%s  level=%d  mouseEnabled=%s"),
             tostring(focus:GetName() or "(unnamed)"),
             tostring(focus:GetFrameStrata()),
             focus:GetFrameLevel(),
@@ -139,7 +139,7 @@ SlashCmdList["CBFRAMES"] = function()
     -- Report key manage-tab frame states.
     local function fr(label, f)
         if not f then print(label .. ": nil"); return end
-        print(string.format("  %s: strata=%s level=%d mouseEnabled=%s visible=%s",
+        print(string.format(NS.CB_L("  %s: strata=%s level=%d mouseEnabled=%s visible=%s"),
             label, tostring(f:GetFrameStrata()), f:GetFrameLevel(),
             tostring(f:IsMouseEnabled()), tostring(f:IsVisible())))
     end
@@ -254,7 +254,7 @@ SlashCmdList["CBDEBUG"] = function(msg)
     end
 
     -- Default: quick group/cache/state dump.
-    print(string.format("Bridge: real=%s override=%s simulate=%s verify=%s tabEnabled=%s loginPhase=%s",
+    print(string.format(NS.CB_L("Bridge: real=%s override=%s simulate=%s verify=%s tabEnabled=%s loginPhase=%s"),
         tostring(NS.bridgeState),
         tostring(NS.debugBridgeOverride or "none"),
         tostring(NS.debugSimulate),
@@ -263,14 +263,14 @@ SlashCmdList["CBDEBUG"] = function(msg)
         tostring(NS.loginPhaseActive)))
 
     local prefix, n = NS.CB_GroupInfo()
-    print(string.format("Group: type=%s count=%d  (party=%d raid=%d)",
+    print(string.format(NS.CB_L("Group: type=%s count=%d  (party=%d raid=%d)"),
         prefix, n, GetNumPartyMembers(), GetNumRaidMembers()))
 
     -- Walk the resolved group (skips the player), reporting per-member state.
     NS.CB_ForEachGroupMember(function(unit, name)
         local _, class = UnitClass(unit)
         local key      = name and strlower(name)
-        print(string.format("  %s name=%s exists=%s isPlayer=%s class=%s inCache=%s probed=%s awaiting=%s",
+        print(string.format(NS.CB_L("  %s name=%s exists=%s isPlayer=%s class=%s inCache=%s probed=%s awaiting=%s"),
             unit,
             tostring(name),
             tostring(UnitExists(unit)),
@@ -365,7 +365,7 @@ local function timingReport()
     local firstSum, firstMax, gapSum, gapN, gapMax = 0, 0, 0, 0, 0
     for i, r in ipairs(rs) do
         local avgGap = r.gapN > 0 and (r.gapSum / r.gapN) or 0
-        print(string.format("  run %d: first %.0f ms, %d lines, avg gap %.0f ms, max gap %.0f ms",
+        print(string.format(NS.CB_L("  run %d: first %.0f ms, %d lines, avg gap %.0f ms, max gap %.0f ms"),
             i, r.first * 1000, r.lines, avgGap * 1000, r.maxGap * 1000))
         firstSum = firstSum + r.first
         if r.first > firstMax then firstMax = r.first end
@@ -376,8 +376,8 @@ local function timingReport()
     local avgFirst = firstSum / #rs
     local avgGap   = gapN > 0 and (gapSum / gapN) or 0
     local worst    = math.max(firstMax, gapMax)
-    NS.CB_Print(string.format(
-        "[timing] avg first reply %.0f ms (max %.0f) | avg line gap %.0f ms (max %.0f) | suggested NS.WHISPER_SILENCE >= %.2f s (2x worst; currently %.2f s)",
+    NS.CB_Print(string.format(NS.CB_L(
+        "[timing] avg first reply %.0f ms (max %.0f) | avg line gap %.0f ms (max %.0f) | suggested NS.WHISPER_SILENCE >= %.2f s (2x worst; currently %.2f s)"),
         avgFirst * 1000, firstMax * 1000, avgGap * 1000, gapMax * 1000,
         worst * 2, NS.WHISPER_SILENCE or 0))
 end
@@ -436,7 +436,7 @@ NS.CB_RunTimingMeasure = function(runs, botName)
         runsLeft = runs or 3,
         results  = {},
     }
-    NS.CB_Print(string.format("[timing] measuring %s with %d 'items' queries...", entry.name, timing.runsLeft))
+    NS.CB_Print(string.format(NS.CB_L("[timing] measuring %s with %d 'items' queries..."), entry.name, timing.runsLeft))
     timingStartRun()
     timingTicker:Show()
 end
@@ -474,7 +474,7 @@ NS.CB_SetInspectTrace = function(on)
             -- containing "CleanBot" is our own call; anything else is external.
             local mine = stack:find("CleanBot", 1, true) ~= nil
             local name = (unit and UnitName(unit)) or "?"
-            print(string.format("|cff%s[CBInspect]|r NotifyInspect(%s = %s)  source=%s",
+            print(string.format(NS.CB_L("|cff%s[CBInspect]|r NotifyInspect(%s = %s)  source=%s"),
                 mine and "00ff00" or "ff4444",
                 tostring(unit), tostring(name),
                 mine and "CleanBot" or "EXTERNAL"))
@@ -556,7 +556,7 @@ local function CB_BuildIconBrowser()
 
     local title = f:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     title:SetPoint("TOPLEFT", f, "TOPLEFT", PAD, -PAD)
-    title:SetText("Icon Browser — click to print path")
+    title:SetText(NS.CB_L("Icon Browser — click to print path"))
     f.title = title
 
     local search = NS.CB_CreateEditBox(f, "CleanBotIconBrowserSearch", 200, 20)
@@ -575,8 +575,8 @@ local function CB_BuildIconBrowser()
         local total    = #filtered
         local numLines = math.ceil(total / COLS)
         -- Surface the database size (and current filter count) so an empty macro-icon DB is obvious.
-        f.title:SetText(string.format("Icon Browser — %d icons%s", #(allIcons or {}),
-            (#filtered ~= #(allIcons or {})) and (" (" .. total .. " shown)") or ""))
+        f.title:SetText(NS.CB_L(string.format(NS.CB_L("Icon Browser — %d icons%s"), #(allIcons or {}),
+            (#filtered ~= #(allIcons or {})) and (" (" .. total .. " shown)") or "")))
         FauxScrollFrame_Update(scroll, numLines, ROWS, CELL)
         local offset = FauxScrollFrame_GetOffset(scroll)
         for idx = 1, COLS * ROWS do
@@ -609,7 +609,7 @@ local function CB_BuildIconBrowser()
         hl:SetBlendMode("ADD")
         NS.CB_AttachTooltip(btn, function(tt, self)
             if not self.rawTex then return false end
-            tt:AddLine(CB_IconFullPath(self.rawTex), 1, 1, 1)
+            tt:AddLine(NS.CB_L(CB_IconFullPath(self.rawTex)), 1, 1, 1)
         end)
         btn:SetScript("OnClick", function(self)
             if self.rawTex then print("|cff66ccffCleanBot icon:|r " .. CB_IconFullPath(self.rawTex)) end

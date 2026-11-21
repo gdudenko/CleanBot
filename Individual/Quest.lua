@@ -98,8 +98,8 @@ local function CB_FormatGenericObjective(text, complete)
     -- Counted objective "Name: cur/req" → rebuild from the static requirement.
     local name, _, req = text:match("^(.-):%s*(%d+)%s*/%s*(%d+)%s*$")
     if name then
-        if complete then return string.format("%s: %s/%s (Complete)", name, req, req) end
-        return string.format("%s x %s", name, req)
+        if complete then return string.format(NS.CB_L("%s: %s/%s (Complete)"), name, req, req) end
+        return string.format(NS.CB_L("%s x %s"), name, req)
     end
     -- Boolean / location objective (no counts).
     if complete then return text .. " (Complete)" end
@@ -121,16 +121,16 @@ local function CB_PopulateRewardSlot(slot, tex, itemName, count, link, quality)
     local countFS = bName and _G[bName .. "Count"]
     if iconTex then iconTex:SetTexture(tex or "") end
     if nameFS  then
-        nameFS:SetText(itemName or "")
+        nameFS:SetText(NS.CB_L(itemName or ""))
         local r, g, b = NS.CB_GetQualityColor(quality)
         nameFS:SetTextColor(r, g, b)
     end
     if countFS then
         if count and count > 1 then
-            countFS:SetText(tostring(count))
+            countFS:SetText(NS.CB_L(tostring(count)))
             countFS:Show()
         else
-            countFS:SetText("")
+            countFS:SetText(NS.CB_L(""))
             countFS:Hide()
         end
     end
@@ -299,7 +299,7 @@ local function CB_RenderQuestGroup(sc, framePool, key, statusKey, info, quests, 
     headerLabel:SetPoint("RIGHT", headerBtn, "RIGHT",  0, 0)
     headerLabel:SetJustifyH("LEFT")
     headerLabel:SetTextColor(info.r, info.g, info.b)
-    headerLabel:SetText(info.label .. " (" .. #quests .. ")")
+    headerLabel:SetText(NS.CB_L(info.label .. " (" .. #quests .. ")"))
 
     -- Collapse toggle + the shared hover/click feedback (white-on-hover label, arrow highlight),
     -- so quest headers match the Manage-tab expanders. Resting color is the group's status color.
@@ -340,7 +340,7 @@ local function CB_RenderQuestGroup(sc, framePool, key, statusKey, info, quests, 
             nameText:SetPoint("RIGHT", rowBtn, "RIGHT", 0, 0)
             nameText:SetJustifyH("LEFT")
             nameText:SetTextColor(info.r, info.g, info.b)
-            nameText:SetText(displayName)
+            nameText:SetText(NS.CB_L(displayName))
 
             -- Capture these for the closures below.
             local questID   = quest.id
@@ -535,7 +535,7 @@ NS.CB_RenderQuestDetail = function(key, questID)
     local titleFS = NS.CB_CreateQuestHeader(dsc)
     titleFS:SetPoint("TOPLEFT", dsc, "TOPLEFT", 0, -DPAD)
     titleFS:SetWidth(dsc:GetWidth())
-    titleFS:SetText(titleText)
+    titleFS:SetText(NS.CB_L(titleText))
     f.detailFrames[#f.detailFrames + 1] = titleFS
 
     local prevFS = titleFS
@@ -544,7 +544,7 @@ NS.CB_RenderQuestDetail = function(key, questID)
     if not hasData then
         local noDataFS = NS.CB_CreateQuestParagraph(dsc)
         NS.CB_AnchorBelow(noDataFS, prevFS)
-        noDataFS:SetText("Details unavailable.\nYou do not have this quest.")
+        noDataFS:SetText(NS.CB_L("Details unavailable.\nYou do not have this quest."))
         f.detailFrames[#f.detailFrames + 1] = noDataFS
 
         dsc:SetHeight(math.max(80, f.detailScrollFrame:GetHeight() or 1))
@@ -558,7 +558,7 @@ NS.CB_RenderQuestDetail = function(key, questID)
         local objTextFS = NS.CB_CreateQuestParagraph(dsc)
         NS.CB_AnchorBelow(objTextFS, prevFS)
         objTextFS:SetWidth(contentW)
-        objTextFS:SetText(questObj)
+        objTextFS:SetText(NS.CB_L(questObj))
         f.detailFrames[#f.detailFrames + 1] = objTextFS
         prevFS = objTextFS
     end
@@ -590,7 +590,7 @@ NS.CB_RenderQuestDetail = function(key, questID)
         local entryFS = NS.CB_CreateObjectiveText(dsc, finishedColor)
         NS.CB_AnchorBelow(entryFS, prevFS)
         entryFS:SetWidth(contentW)
-        entryFS:SetText(label)
+        entryFS:SetText(NS.CB_L(label))
         f.detailFrames[#f.detailFrames + 1] = entryFS
         prevFS = entryFS
     end
@@ -600,14 +600,14 @@ NS.CB_RenderQuestDetail = function(key, questID)
     if questDesc ~= "" then
         local descLabelFS = NS.CB_CreateQuestHeader(dsc)
         NS.CB_AnchorBelow(descLabelFS, prevFS)
-        descLabelFS:SetText("Description")
+        descLabelFS:SetText(NS.CB_L("Description"))
         f.detailFrames[#f.detailFrames + 1] = descLabelFS
         prevFS = descLabelFS
 
         local descFS = NS.CB_CreateQuestParagraph(dsc)
         NS.CB_AnchorBelow(descFS, prevFS)
         descFS:SetWidth(contentW)
-        descFS:SetText(questDesc)
+        descFS:SetText(NS.CB_L(questDesc))
         f.detailFrames[#f.detailFrames + 1] = descFS
         prevFS = descFS
     end
@@ -621,7 +621,7 @@ NS.CB_RenderQuestDetail = function(key, questID)
     if hasChoices or hasRequired or hasMoney or hasXP then
         local rewardsHdrFS = NS.CB_CreateQuestHeader(dsc)
         NS.CB_AnchorBelow(rewardsHdrFS, prevFS)
-        rewardsHdrFS:SetText("Rewards")
+        rewardsHdrFS:SetText(NS.CB_L("Rewards"))
         f.detailFrames[#f.detailFrames + 1] = rewardsHdrFS
         prevFS = rewardsHdrFS
 
@@ -633,7 +633,7 @@ NS.CB_RenderQuestDetail = function(key, questID)
             local choiceLblFS = NS.CB_CreateQuestParagraph(dsc)
             NS.CB_AnchorBelow(choiceLblFS, prevFS)
             choiceLblFS:SetWidth(contentW)
-            choiceLblFS:SetText("You will be able to choose one of these rewards:")
+            choiceLblFS:SetText(NS.CB_L("You will be able to choose one of these rewards:"))
             f.detailFrames[#f.detailFrames + 1] = choiceLblFS
             prevFS = choiceLblFS
 
@@ -647,7 +647,7 @@ NS.CB_RenderQuestDetail = function(key, questID)
             local recvText = hasChoices and "You will also receive:" or "You will receive:"
             local recvLblFS = NS.CB_CreateQuestParagraph(dsc)
             NS.CB_AnchorBelow(recvLblFS, prevFS)
-            recvLblFS:SetText(recvText)
+            recvLblFS:SetText(NS.CB_L(recvText))
             f.detailFrames[#f.detailFrames + 1] = recvLblFS
             prevFS = recvLblFS
 
@@ -656,7 +656,7 @@ NS.CB_RenderQuestDetail = function(key, questID)
             if hasMoney then
                 local moneyFS = NS.CB_CreateQuestParagraph(dsc)
                 NS.CB_AnchorAhead(moneyFS, recvLblFS)
-                moneyFS:SetText(CB_FormatMoney(rewardMoney))
+                moneyFS:SetText(NS.CB_L(CB_FormatMoney(rewardMoney)))
                 f.detailFrames[#f.detailFrames + 1] = moneyFS
             end
 
@@ -665,7 +665,7 @@ NS.CB_RenderQuestDetail = function(key, questID)
                 local xpFS = NS.CB_CreateQuestParagraph(dsc)
                 NS.CB_AnchorBelow(xpFS, prevFS)
                 xpFS:SetWidth(contentW)
-                xpFS:SetText("Experience: " .. tostring(rewardXP))
+                xpFS:SetText(NS.CB_L("Experience: " .. tostring(rewardXP)))
                 f.detailFrames[#f.detailFrames + 1] = xpFS
                 prevFS = xpFS
             end
@@ -742,7 +742,7 @@ NS.CB_RenderQuests = function(key)
     if not hasAny then
         local emptyLabel = sc:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
         emptyLabel:SetPoint("TOP", sc, "TOP", 0, -8)
-        emptyLabel:SetText("No quests.")
+        emptyLabel:SetText(NS.CB_L("No quests."))
         f.questGroupFrames[#f.questGroupFrames + 1] = emptyLabel
     end
 
@@ -850,7 +850,7 @@ NS.CB_GetQuestFrame = function(key, botName)
         CB_ApplyQuestFrameSkin(f)
 
         local title = f:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-        title:SetText(botName .. "'s Quest Log")
+        title:SetText(NS.CB_L(botName .. "'s Quest Log"))
         title:SetPoint("CENTER", f, "TOP", BLIZZ_TITLE_X, BLIZZ_TITLE_Y)
         title:SetJustifyH("CENTER")
 
@@ -918,7 +918,7 @@ NS.CB_GetQuestFrame = function(key, botName)
         local function makeBtn(name, label, w)
             local btn = CreateFrame("Button", name, f, "UIPanelButtonTemplate")
             btn:SetSize(w, BLIZZ_BTN_H)
-            btn:SetText(label)
+            btn:SetText(NS.CB_L(label))
             return btn
         end
 

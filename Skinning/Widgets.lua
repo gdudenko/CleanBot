@@ -36,7 +36,7 @@ end
 ---@return table            The created FontString with margins stamped.
 NS.CB_CreateLabel = function(parent, text, fontObj)
     local lbl = parent:CreateFontString(nil, "OVERLAY", fontObj or "GameFontNormal")
-    if text then lbl:SetText(text) end
+    if text then lbl:SetText(NS.CB_L(text)) end
     lbl.marginTop    = NS.MARGIN.label.top
     lbl.marginBottom = NS.MARGIN.label.bottom
     lbl.marginLeft   = NS.MARGIN.label.left
@@ -54,7 +54,7 @@ end
 ---@return table            The created FontString with margins stamped.
 NS.CB_CreateHeader = function(parent, text, fontObj)
     local hdr = parent:CreateFontString(nil, "OVERLAY", fontObj or "GameFontNormalLarge")
-    if text then hdr:SetText(text) end
+    if text then hdr:SetText(NS.CB_L(text)) end
     hdr.marginTop    = NS.MARGIN.header.top
     hdr.marginBottom = NS.MARGIN.header.bottom
     hdr.marginLeft   = NS.MARGIN.header.left
@@ -150,7 +150,7 @@ NS.CB_CreateSection = function(parent, key, title, nestLevel)
 
     -- Title label: FontString on parent, to the right of the toggle button.
     local titleLabel = parent:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    titleLabel:SetText(title)
+    titleLabel:SetText(NS.CB_L(title))
     titleLabel:SetPoint("LEFT", toggleBtn, "RIGHT", 4, 0)
     section.titleLabel = titleLabel
 
@@ -306,7 +306,7 @@ end)
 ---@return string        The "|T...|t" escape string.
 NS.CB_InlineIcon = function(path, size, coords, texDim, yOff)
     texDim = texDim or 256
-    return string.format("|T%s:%d:%d:0:%d:%d:%d:%d:%d:%d:%d|t",
+    return string.format(NS.CB_L("|T%s:%d:%d:0:%d:%d:%d:%d:%d:%d:%d|t"),
         path, size, size, yOff or 0, texDim, texDim,
         coords[1] * texDim, coords[2] * texDim, coords[3] * texDim, coords[4] * texDim)
 end
@@ -414,7 +414,7 @@ NS.CB_CreateSelectList = function(parent, name, width, height, onSelect, multiSe
                 local isTable = type(item) == "table"
                 row.index = dataIdx
                 row.value = itemValue(item)
-                row.label:SetText(isTable and item.text or item)
+                row.label:SetText(NS.CB_L(isTable and item.text or item))
 
                 -- Class icon only for class-decorated, present (non-gray) rows.
                 local showIcon = isTable and item.class and not item.gray
@@ -705,7 +705,7 @@ end
 NS.CB_CreateButton = function(parent, name, text, w, h, onClick)
     local btn = CreateFrame("Button", name, parent, "UIPanelButtonTemplate")
     if w and h then btn:SetSize(w, h) end
-    if text then btn:SetText(text) end
+    if text then btn:SetText(NS.CB_L(text)) end
     if onClick then btn:SetScript("OnClick", onClick) end
     if NS.ElvUI_S then NS.ElvUI_S:HandleButton(btn) end
     btn.marginTop    = NS.MARGIN.button.top
@@ -896,12 +896,13 @@ end
 ---@return table cb     The created CheckButton.
 ---@return table label  The label FontString.
 NS.CB_CreateLabeledCheckBox = function(parent, name, labelText, desc)
+    labelText = NS.CB_L(labelText)
     local cb = NS.CB_CreateCheckBox(parent, name)
     cb:SetSize(20, 20)
 
     local lbl = parent:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     lbl:SetPoint("LEFT", cb, "RIGHT", 4, 0)
-    lbl:SetText(labelText)
+    lbl:SetText(NS.CB_L(labelText))
     cb.labelFS   = lbl
     cb.labelBase = labelText
 
@@ -934,7 +935,7 @@ end
 NS.CB_CreateTab = function(parent, name, text, onClick)
     local tab = CreateFrame("Button", name, parent, "UIPanelButtonTemplate")
     tab:SetSize(NS.TAB_WIDTH, NS.TAB_HEIGHT)
-    if text    then tab:SetText(text)                   end
+    if text    then tab:SetText(NS.CB_L(text))                   end
     if onClick then tab:SetScript("OnClick", onClick)   end
     if NS.ElvUI_S then NS.ElvUI_S:HandleButton(tab)     end
 
@@ -1054,7 +1055,7 @@ NS.CB_CreateSlider = function(parent, name, title, softMin, softMax, defaultVal,
     local label = nil
     if title then
         label = wrapper:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-        label:SetText(title)
+        label:SetText(NS.CB_L(title))
         label:SetPoint("TOPLEFT",  wrapper, "TOPLEFT",  0, 0)
         label:SetPoint("TOPRIGHT", wrapper, "TOPRIGHT", 0, 0)
         label:SetJustifyH("CENTER")
@@ -1078,8 +1079,8 @@ NS.CB_CreateSlider = function(parent, name, title, softMin, softMax, defaultVal,
     local lowLabel  = _G[name .. "Low"]
     local highLabel = _G[name .. "High"]
     if textLabel then textLabel:Hide() end
-    if lowLabel  then lowLabel:SetText(lowText  or tostring(softMin)) end
-    if highLabel then highLabel:SetText(highText or tostring(softMax)) end
+    if lowLabel  then lowLabel:SetText(NS.CB_L(lowText  or tostring(softMin))) end
+    if highLabel then highLabel:SetText(NS.CB_L(highText or tostring(softMax))) end
 
     -- EditBox sits centered between the low/high labels, directly below the slider bar.
     -- Created directly (not via CB_CreateEditBox) so we can apply CB_SkinEditBoxSafe
@@ -1110,7 +1111,7 @@ NS.CB_CreateSlider = function(parent, name, title, softMin, softMax, defaultVal,
     s:SetScript("OnValueChanged", function(self, val)
         if updating then return end
         local v = math.floor(val + 0.5)
-        box:SetText(tostring(v))
+        box:SetText(NS.CB_L(tostring(v)))
         commit(v)
     end)
 
@@ -1121,19 +1122,19 @@ NS.CB_CreateSlider = function(parent, name, title, softMin, softMax, defaultVal,
         local v = tonumber(box:GetText())
         if v then
             v = math.max(hardMin, math.min(hardMax, math.floor(v + 0.5)))
-            box:SetText(tostring(v))
+            box:SetText(NS.CB_L(tostring(v)))
             local thumbPos = math.max(softMin, math.min(softMax, v))
             updating = true
             s:SetValue(thumbPos)
             updating = false
             commit(v)
         else
-            box:SetText(tostring(math.floor(s:GetValue() + 0.5)))
+            box:SetText(NS.CB_L(tostring(math.floor(s:GetValue() + 0.5))))
         end
     end
     box:SetScript("OnEnterPressed", function(self) applyBoxValue(); self:ClearFocus() end)
     box:SetScript("OnEscapePressed", function(self)
-        box:SetText(tostring(math.floor(s:GetValue() + 0.5)))
+        box:SetText(NS.CB_L(tostring(math.floor(s:GetValue() + 0.5))))
         self:ClearFocus()
     end)
     box:SetScript("OnEditFocusLost", applyBoxValue)
@@ -1154,7 +1155,7 @@ NS.CB_CreateSlider = function(parent, name, title, softMin, softMax, defaultVal,
         updating = true
         s:SetValue(v)
         updating = false
-        box:SetText(text or tostring(math.floor(v + 0.5)))
+        box:SetText(NS.CB_L(text or tostring(math.floor(v + 0.5))))
         -- A silent numeric sync becomes the new committed baseline; a text override
         -- (mixed-group "???") clears it so the next user commit always fires.
         lastCommitted = not text and math.floor(v + 0.5) or nil
@@ -1276,7 +1277,7 @@ NS.CB_CreateColorSwatch = function(parent, name, text, initR, initG, initB, onCh
 
     if text then
         local lbl = wrapper:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-        lbl:SetText(text)
+        lbl:SetText(NS.CB_L(text))
         -- "LEFT" is the middle-left anchor point, so this centers the label
         -- vertically with the swatch button without extra math.
         lbl:SetPoint("LEFT", btn, "RIGHT", 4, 0)
@@ -1458,7 +1459,7 @@ NS.CB_CreateXPBar = function(parent)
     -- Centered label on top of everything.
     local label = overlay:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     label:SetPoint("CENTER", xp, "CENTER", 0, 0)
-    label:SetText("")
+    label:SetText(NS.CB_L(""))
 
     -- Tooltip — text is filled in by CB_RefreshXPBar (xp.tooltipText). The bar
     -- lives on the (interactive) paperdoll model, so it can take mouse events.

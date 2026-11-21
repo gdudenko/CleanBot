@@ -156,7 +156,7 @@ local function CB_ShowInvMenu(cell, key)
         info.notCheckable = true
 
         if isEquipment then
-            info.text = "Equip"
+            info.text = NS.CB_L("Equip")
             info.func = function()
                 local entry = CleanBot_PartyBots[key]
                 if not entry then return end
@@ -166,7 +166,7 @@ local function CB_ShowInvMenu(cell, key)
         end
 
         if isConsumable then
-            info.text = "Use"
+            info.text = NS.CB_L("Use")
             info.func = function()
                 local entry = CleanBot_PartyBots[key]
                 if not entry then return end
@@ -175,7 +175,7 @@ local function CB_ShowInvMenu(cell, key)
                 -- IsShown gate: a hidden countText still holds the previous occupant's number.
                 local curCount = cell.countText:IsShown() and tonumber(cell.countText:GetText()) or 1
                 if curCount > 1 then
-                    cell.countText:SetText(curCount - 1)
+                    cell.countText:SetText(NS.CB_L(curCount - 1))
                 else
                     cell.icon:Hide()
                     cell.countText:Hide()
@@ -193,7 +193,7 @@ local function CB_ShowInvMenu(cell, key)
         -- docs/playerbot-commands.md, "Chat commands are TRIGGERS, not action names").
         if not isQuest then
             local function addItemCmd(label, trigger, refetch)
-                info.text = label
+                info.text = NS.CB_L(label)
                 info.func = function()
                     local entry = CleanBot_PartyBots[key]
                     if not entry then return end
@@ -209,7 +209,7 @@ local function CB_ShowInvMenu(cell, key)
             -- can't list or withdraw a bot's guild bank, and the guild bank is shared guild-wide.
             -- Needs the bot in your guild at a guild vault with deposit rights; failures surface
             -- via the CLEANBOT_NO_GUILD_BANK popup (raised from the whisper handler in Bridge.lua).
-            info.text = "Deposit to Guild Bank"
+            info.text = NS.CB_L("Deposit to Guild Bank")
             info.func = function()
                 local entry = CleanBot_PartyBots[key]
                 if not entry then return end
@@ -226,7 +226,7 @@ local function CB_ShowInvMenu(cell, key)
         end
 
         -- Anything can be destroyed/discarded from the inventory
-        info.text = "Destroy"
+        info.text = NS.CB_L("Destroy")
         info.func = function ()
             local entry = CleanBot_PartyBots[key]
             if not entry then return end
@@ -245,7 +245,7 @@ local function CB_ShowInvMenu(cell, key)
 
         NS.CB_AddWowheadMenuButton(info, cell.itemLink)
 
-        info.text = "Cancel"
+        info.text = NS.CB_L("Cancel")
         info.func = function() CloseDropDownMenus() end
         UIDropDownMenu_AddButton(info)
     end, "MENU")
@@ -266,7 +266,7 @@ local function CB_ShowBankMenu(cell, key)
         info.notCheckable = true
 
         local function addBtn(label, fn)
-            info.text = label
+            info.text = NS.CB_L(label)
             info.func = fn
             UIDropDownMenu_AddButton(info)
         end
@@ -365,7 +365,7 @@ local function CB_OptimisticMove(srcCell, destFrame, destCell)
     dest.icon:Show()
     dest.itemLink = link
     NS.CB_ApplyItemVisuals(dest, link)
-    if count then dest.countText:SetText(count); dest.countText:Show()
+    if count then dest.countText:SetText(NS.CB_L(count)); dest.countText:Show()
     else dest.countText:Hide() end
 end
 
@@ -425,7 +425,7 @@ end
 -- Shown when a bank list/deposit/withdraw runs without a banker NPC near the bot
 -- (raised from the no-banker whisper handler in Bridge.lua). %s = bot name.
 StaticPopupDialogs["CLEANBOT_NO_BANKER"] = {
-    text         = "%s has no banker nearby. Move the bot next to a banker NPC, then try again.",
+    text         = NS.CB_L("%s has no banker nearby. Move the bot next to a banker NPC, then try again."),
     button1      = OKAY,
     timeout      = 0,
     whileDead    = true,
@@ -435,8 +435,8 @@ StaticPopupDialogs["CLEANBOT_NO_BANKER"] = {
 -- Shown when a "guild bank <item>" deposit fails (raised from the guild-bank whisper handler in
 -- Bridge.lua): bot not in your guild, no guild vault nearby, or no deposit rights. %s = bot name.
 StaticPopupDialogs["CLEANBOT_NO_GUILD_BANK"] = {
-    text         = "%s couldn't deposit to the guild bank. The bot must be in your guild, standing "
-                .. "at a guild vault, with deposit rights for the first tab.",
+    text         = NS.CB_L("%s couldn't deposit to the guild bank. The bot must be in your guild, standing "
+                .. "at a guild vault, with deposit rights for the first tab."),
     button1      = OKAY,
     timeout      = 0,
     whileDead    = true,
@@ -575,7 +575,7 @@ local function CB_StopDrag()
             src.icon:Show()
             src.itemLink = invDropCell.itemLink
             local tgt = invDropCell.countText:IsShown() and invDropCell.countText:GetText() or nil
-            if tgt then src.countText:SetText(tgt); src.countText:Show()
+            if tgt then src.countText:SetText(NS.CB_L(tgt)); src.countText:Show()
             else src.countText:Hide() end
         else
             src.icon:Hide()
@@ -586,7 +586,7 @@ local function CB_StopDrag()
         invDropCell.icon:SetTexture(tmpTex)
         invDropCell.icon:Show()
         invDropCell.itemLink = tmpLink
-        if tmpCount then invDropCell.countText:SetText(tmpCount); invDropCell.countText:Show()
+        if tmpCount then invDropCell.countText:SetText(NS.CB_L(tmpCount)); invDropCell.countText:Show()
         else invDropCell.countText:Hide() end
 
         -- Sync quality borders to match swapped item links.
@@ -1005,7 +1005,7 @@ local function CB_PatchInventory(f, rawItems, bagTotal, bagUsed, entry)
         for i, cell in ipairs(cells) do
             if newItems[i] then
                 if newItems[i].count > 1 then
-                    cell.countText:SetText(newItems[i].count)
+                    cell.countText:SetText(NS.CB_L(newItems[i].count))
                     cell.countText:Show()
                 else
                     cell.countText:Hide()
@@ -1044,7 +1044,7 @@ local function CB_PatchInventory(f, rawItems, bagTotal, bagUsed, entry)
             cell.itemLink = item.link
             NS.CB_ApplyItemVisuals(cell, item.link)
             if item.count > 1 then
-                cell.countText:SetText(item.count)
+                cell.countText:SetText(NS.CB_L(item.count))
                 cell.countText:Show()
             else
                 cell.countText:Hide()
@@ -1055,14 +1055,14 @@ local function CB_PatchInventory(f, rawItems, bagTotal, bagUsed, entry)
     -- Update footer labels (inventory only — bank frame has no footer)
     if f.slotLabel then
         if bagTotal then
-            f.slotLabel:SetText((bagUsed or #rawItems) .. "/" .. bagTotal)
+            f.slotLabel:SetText(NS.CB_L((bagUsed or #rawItems) .. "/" .. bagTotal))
             f.slotLabel:Show()
         else
             f.slotLabel:Hide()
         end
         local money = entry.money
         if money then
-            f.moneyLabel:SetText(FormatMoney(money.gold or 0, money.silver or 0, money.copper or 0))
+            f.moneyLabel:SetText(NS.CB_L(FormatMoney(money.gold or 0, money.silver or 0, money.copper or 0)))
             f.moneyLabel:Show()
         else
             f.moneyLabel:Hide()
@@ -1105,7 +1105,7 @@ NS.CB_SetInventoryLoading = function(f, on)
     if not f then return end
     if on then
         local ov = CB_EnsureLoadingOverlay(f)
-        ov.text:SetText(f.rendered and "Refreshing..." or "Loading...")
+        ov.text:SetText(NS.CB_L(f.rendered and "Refreshing..." or "Loading..."))
         ov:Show()
     elseif f.loadingOverlay then
         f.loadingOverlay:Hide()
@@ -1297,7 +1297,7 @@ local function CB_RenderGrid(kind, key, forceFull)
             cell.itemLink = item.link
             NS.CB_ApplyItemVisuals(cell, item.link)
             if item.count > 1 then
-                cell.countText:SetText(item.count)
+                cell.countText:SetText(NS.CB_L(item.count))
                 cell.countText:Show()
             else
                 cell.countText:Hide()
@@ -1318,7 +1318,7 @@ local function CB_RenderGrid(kind, key, forceFull)
     if cfg.showFooter then
         -- Slot counter (bridge path only)
         if bagTotal then
-            f.slotLabel:SetText((bagUsed or #items) .. "/" .. bagTotal)
+            f.slotLabel:SetText(NS.CB_L((bagUsed or #items) .. "/" .. bagTotal))
             f.slotLabel:Show()
         else
             f.slotLabel:Hide()
@@ -1327,7 +1327,7 @@ local function CB_RenderGrid(kind, key, forceFull)
         -- Money display
         local money = entry.money
         if money then
-            f.moneyLabel:SetText(FormatMoney(money.gold or 0, money.silver or 0, money.copper or 0))
+            f.moneyLabel:SetText(NS.CB_L(FormatMoney(money.gold or 0, money.silver or 0, money.copper or 0)))
             f.moneyLabel:Show()
         else
             f.moneyLabel:Hide()

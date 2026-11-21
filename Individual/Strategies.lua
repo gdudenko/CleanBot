@@ -574,7 +574,7 @@ local function CB_VerifyStrategyExpect(entry, section)
         local got = general and general[field]
         if got == nil and classSec then got = classSec[field] end
         if got ~= want then
-            NS.CB_Print(string.format("|cffff4444[verify]|r %s  %s.%s: expected %s, got %s",
+            NS.CB_Print(string.format(NS.CB_L("|cffff4444[verify]|r %s  %s.%s: expected %s, got %s"),
                 entry.name or "?", section, field, tostring(want), tostring(got)))
         end
     end

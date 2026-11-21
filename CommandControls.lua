@@ -214,22 +214,22 @@ NS.CB_BuildPartyRaidCommands = function(parent, tag, send, describeTarget, forma
 
     local formationDD = NS.CB_CreateDropdown(parent, "CleanBotCmdFormation_" .. tag, 140)
     NS.CB_AnchorBelow(formationDD, formationLabel)
-    UIDropDownMenu_SetText(formationDD, "Select\226\128\166")  -- "Select…"
+    UIDropDownMenu_SetText(formationDD, NS.CB_L("Select\226\128\166"))  -- "Select…"
     UIDropDownMenu_Initialize(formationDD, function()
         for _, f in ipairs(NS.FORMATIONS) do
             local label       = titleCase(f.token)
             local info        = UIDropDownMenu_CreateInfo()
-            info.text         = label
+            info.text         = NS.CB_L(label)
             info.value        = f.token
             info.notCheckable = 1
             -- Hover tooltip: behavior summary titled with the formation's icon (inline
             -- texture markup) when one ships in icons/, anchored to the menu item.
             info.tooltipOnButton = 1
             info.tooltipTitle    = f.icon
-                and ("|T" .. ICON_PATH .. f.token .. ":" .. ICON_SIZE .. "|t " .. label) or label
-            info.tooltipText     = f.desc
+                and ("|T" .. ICON_PATH .. f.token .. ":" .. ICON_SIZE .. "|t " .. NS.CB_L(label)) or NS.CB_L(label)
+            info.tooltipText     = NS.CB_L(f.desc)
             info.func            = function()
-                UIDropDownMenu_SetText(formationDD, label)       -- immediate feedback
+                UIDropDownMenu_SetText(formationDD, NS.CB_L(label))       -- immediate feedback
                 if formationSet then formationSet(f.token) end   -- optimistic cache
                 send("formation " .. f.token)                    -- server expects the lowercase token
                 NS.CB_RefreshCommands()
@@ -244,11 +244,11 @@ NS.CB_BuildPartyRaidCommands = function(parent, tag, send, describeTarget, forma
         if not formationGet then return end
         local cur = formationGet()
         if cur == NS.MIXED then
-            UIDropDownMenu_SetText(formationDD, "Mixed")
+            UIDropDownMenu_SetText(formationDD, NS.CB_L("Mixed"))
         elseif cur then
-            UIDropDownMenu_SetText(formationDD, titleCase(cur))
+            UIDropDownMenu_SetText(formationDD, NS.CB_L(titleCase(cur)))
         else
-            UIDropDownMenu_SetText(formationDD, "Select\226\128\166")  -- "Select…"
+            UIDropDownMenu_SetText(formationDD, NS.CB_L("Select\226\128\166"))  -- "Select…"
         end
     end
     refresh()
@@ -322,7 +322,7 @@ NS.CB_BuildPartyRaidCommands = function(parent, tag, send, describeTarget, forma
         if not passiveGet then return end
         local v = passiveGet()
         passiveCB:SetChecked(v == true)
-        passiveLbl:SetText(v == NS.MIXED and "Passive (?)" or "Passive")
+        passiveLbl:SetText(NS.CB_L(v == NS.MIXED and "Passive (?)" or "Passive"))
     end
     refreshPassive()
     NS.commandRefreshers[#NS.commandRefreshers + 1] = refreshPassive

@@ -8,8 +8,12 @@
 -- Debug.lua.
 -- ============================================================
 
-CleanBotNS = {}
+CleanBotNS = CleanBotNS or {}
 local NS = CleanBotNS
+
+-- Loc.lua loads before this file and provides the Russian lookup.
+-- Keep an identity fallback so the module also works standalone (unit tests).
+if not NS.CB_L then NS.CB_L = function(s) return s end end
 
 -- ============================================================
 -- Shared utilities
@@ -18,7 +22,7 @@ local NS = CleanBotNS
 -- Chat output with the standard CleanBot tag.
 ---@param msg string  Message to print to the default chat frame.
 NS.CB_Print = function(msg)
-    print("|cffffcc00CleanBot|r: " .. msg)
+    print("|cffffcc00CleanBot|r: " .. NS.CB_L(msg))
 end
 
 -- One-shot timer: run fn() once, `delay` seconds from now.
@@ -134,12 +138,19 @@ end
 ---@param desc   string|fun():string|nil  White wrapped body line.
 ---@param anchor string?           GameTooltip anchor point (default "ANCHOR_RIGHT").
 NS.CB_SetTooltip = function(frame, title, desc, anchor)
+    -- Tooltips may be assembled at runtime from several paragraphs (a flyout's current
+    -- action desc + the shared hint). Translate line by line so each paragraph is looked
+    -- up on its own instead of failing on the whole concatenation.
+    local function loc(text)
+        if type(text) ~= "string" then return text end
+        return (text:gsub("[^\n]+", function(line) return NS.CB_L(line) end))
+    end
     NS.CB_AttachTooltip(frame, function(tt)
         local t = type(title) == "function" and title() or title
         local d = type(desc)  == "function" and desc()  or desc
         if not t and not d then return false end
-        if t then tt:AddLine(t, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b) end          -- gold header
-        if d then tt:AddLine(d, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, true) end  -- white body
+        if t then tt:AddLine(loc(t), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b) end          -- gold header
+        if d then tt:AddLine(loc(d), HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, true) end  -- white body
     end, anchor)
 end
 
@@ -617,7 +628,7 @@ initFrame:SetScript("OnEvent", function(self, event)
             NS.individualStratPanel:Hide()
         end
         if NS.individualExpandBtn then
-            NS.individualExpandBtn:SetText(NS.individualExpanded and "<" or ">")
+            NS.individualExpandBtn:SetText(NS.CB_L(NS.individualExpanded and "<" or ">"))
         end
         -- One apply path shared with Settings Apply: emit the display-setting events so the
         -- theme subscribers re-apply scale/transparency/accent. (Accent is also baked in during
@@ -627,4 +638,4 @@ initFrame:SetScript("OnEvent", function(self, event)
     end
 end)
 
-print("CleanBot loaded! Type /cleanbot to open.")
+print(NS.CB_L("CleanBot loaded! Type /cleanbot to open."))

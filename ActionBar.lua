@@ -329,7 +329,7 @@ local function CB_UpdateSnapHighlight(snap)
     snapHighlight:ClearAllPoints()
     snapHighlight:SetPoint("TOPLEFT", f, "TOPLEFT", 0, 0)
     snapHighlight:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", 0, 0)
-    snapHighlight.label:SetText(snap.frame)
+    snapHighlight.label:SetText(NS.CB_L(snap.frame))
 
     local edge, side = snapHighlight.edge, EDGE_SIDE[snap.edge]
     edge:ClearAllPoints()
@@ -844,7 +844,7 @@ local function CB_BuildConfig()
 
     -- "Anchor From" label + corner dropdown (the pinned corner; left-aligned at PADC).
     local anchorLabel = configFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    anchorLabel:SetText("Anchor From")
+    anchorLabel:SetText(NS.CB_L("Anchor From"))
     anchorLabel:SetPoint("TOPLEFT", configFrame, "TOPLEFT", PADC, -PADC)
 
     local growDD = NS.CB_CreateDropdown(configFrame, "CleanBotActionBarGrowDD", 150)
@@ -868,7 +868,7 @@ local function CB_BuildConfig()
 
     -- "Grow Direction" label + dropdown (the way the bar's buttons flow).
     local dirLabel = configFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    dirLabel:SetText("Grow Direction")
+    dirLabel:SetText(NS.CB_L("Grow Direction"))
     dirLabel:SetPoint("TOPLEFT", anchorLabel, "BOTTOMLEFT", 0, -40)
 
     local dirDD = NS.CB_CreateDropdown(configFrame, "CleanBotActionBarDirDD", 150)
@@ -895,11 +895,11 @@ local function CB_BuildConfig()
     xyRow:SetPoint("TOPLEFT", dirLabel, "BOTTOMLEFT", 0, -40)
 
     local xLabel = xyRow:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    xLabel:SetText("x:")
+    xLabel:SetText(NS.CB_L("x:"))
     xLabel:SetPoint("LEFT", xyRow, "LEFT", 0, 0)
 
     local yLabel = xyRow:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    yLabel:SetText("y:")
+    yLabel:SetText(NS.CB_L("y:"))
     yLabel:SetPoint("LEFT", xyRow, "CENTER", 4, 0)
 
     -- Both boxes anchored on both sides so they grow: xBox fills xLabel→midpoint, yBox fills yLabel→right.
@@ -1039,10 +1039,10 @@ local function CB_BuildConfig()
     -- Syncs the dropdown text and editboxes from the live anchor (no focused box is clobbered).
     CB_RefreshConfig = function()
         if not configFrame then return end
-        UIDropDownMenu_SetText(growDD, CORNER_LABEL[anchor.growFrom] or anchor.growFrom)
-        UIDropDownMenu_SetText(dirDD, DIR_LABEL[anchor.growDir] or anchor.growDir)
-        if not xBox:HasFocus() then xBox:SetText(tostring(math.floor((anchor.x or 0) + 0.5))) end
-        if not yBox:HasFocus() then yBox:SetText(tostring(math.floor((anchor.y or 0) + 0.5))) end
+        UIDropDownMenu_SetText(growDD, NS.CB_L(CORNER_LABEL[anchor.growFrom] or anchor.growFrom))
+        UIDropDownMenu_SetText(dirDD, NS.CB_L(DIR_LABEL[anchor.growDir] or anchor.growDir))
+        if not xBox:HasFocus() then xBox:SetText(NS.CB_L(tostring(math.floor((anchor.x or 0) + 0.5)))) end
+        if not yBox:HasFocus() then yBox:SetText(NS.CB_L(tostring(math.floor((anchor.y or 0) + 0.5)))) end
         snapCB:SetChecked(NS.actionBarSnap)
     end
 end
@@ -1426,7 +1426,7 @@ local function CB_BuildActionBar()
 
     local editLabel = overlay:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     editLabel:SetPoint("CENTER", overlay, "CENTER", 0, 0)
-    editLabel:SetText("CleanBot")
+    editLabel:SetText(NS.CB_L("CleanBot"))
 
     NS.CB_SetTooltip(overlay, "Action Bar — Edit Mode",
         "Click and drag to move. Drag near a frame (minimap, the CleanBot window, a unit frame, …) to snap to its edge.", "ANCHOR_TOP")

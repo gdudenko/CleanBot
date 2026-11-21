@@ -114,11 +114,11 @@ btn:SetScript("OnClick", function(self, button)
 end)
 
 NS.CB_AttachTooltip(btn, function(tt)
-    tt:AddLine("CleanBot", 1, 1, 1)
-    tt:AddLine("Left-click: Open CleanBot", 0.8, 0.8, 0.8)
-    tt:AddLine("Right-click: Toggle Action Bar", 0.8, 0.8, 0.8)
-    tt:AddLine("Shift+Right-click: Action Bar Edit Mode", 0.8, 0.8, 0.8)
-    tt:AddLine("Drag to Move", 0.8, 0.8, 0.8)
+    tt:AddLine(NS.CB_L("CleanBot"), 1, 1, 1)
+    tt:AddLine(NS.CB_L("Left-click: Open CleanBot"), 0.8, 0.8, 0.8)
+    tt:AddLine(NS.CB_L("Right-click: Toggle Action Bar"), 0.8, 0.8, 0.8)
+    tt:AddLine(NS.CB_L("Shift+Right-click: Action Bar Edit Mode"), 0.8, 0.8, 0.8)
+    tt:AddLine(NS.CB_L("Drag to Move"), 0.8, 0.8, 0.8)
 
     -- Bridge status line — always shows the real handshake state (not the debug override).
     local state = NS.bridgeState or "unknown"
@@ -130,17 +130,17 @@ NS.CB_AttachTooltip(btn, function(tt)
     else
         r, g, b = 1.0, 0.8, 0.2
     end
-    tt:AddLine("MultiBot Bridge Status: " .. state, r, g, b)
+    tt:AddLine(NS.CB_L("MultiBot Bridge Status: " .. state), r, g, b)
 
     -- Debug lines — only shown when an override or simulate mode is active.
     if NS.debugBridgeOverride then
-        tt:AddLine("|cff888888Debug: Bridge override \226\134\146 " .. NS.debugBridgeOverride .. "|r")
+        tt:AddLine(NS.CB_L("|cff888888Debug: Bridge override \226\134\146 " .. NS.debugBridgeOverride .. "|r"))
     end
     if NS.debugSimulate then
-        tt:AddLine("|cff888888Simulate mode: ON|r")
+        tt:AddLine(NS.CB_L("|cff888888Simulate mode: ON|r"))
     end
     if NS.debugVerify then
-        tt:AddLine("|cff888888Strategy verify logging: ON|r")
+        tt:AddLine(NS.CB_L("|cff888888Strategy verify logging: ON|r"))
     end
 end, "ANCHOR_LEFT")
 

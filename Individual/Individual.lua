@@ -28,12 +28,12 @@ NS.CleanBot_BuildIndividualTab = function()
 
     -- The XML-defined CleanBotFrameText is a child of CleanBotFrame and would
     -- bleed through across tabs. Hide it and use an individualPanel-parented label instead.
-    CleanBotFrameText:SetText("")
+    CleanBotFrameText:SetText(NS.CB_L(""))
     CleanBotFrameText:Hide()
 
     NS.individualEmptyLabel = NS.individualPanel:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     NS.individualEmptyLabel:SetPoint("TOP", NS.individualPanel, "TOP", 0, -(NS.BOT_BAR_H + 20))
-    NS.individualEmptyLabel:SetText("")
+    NS.individualEmptyLabel:SetText(NS.CB_L(""))
 
     NS.individualContent = CreateFrame("Frame", "CleanBotIndividualContent", NS.individualPanel)
     -- Inset individualContent by individualPanel's stamped padding so all model/equip/strategy
@@ -636,7 +636,7 @@ local function CB_BuildTalentGroup(parent, prevBottom, group, slot, tag, gi, reg
             info.tooltipText     = s.desc
             info.tooltipOnButton = 1
             info.func            = function()
-                UIDropDownMenu_SetText(self, s.name)
+                UIDropDownMenu_SetText(self, NS.CB_L(s.name))
                 local cd2 = getSource(CB_SlotEntry(slot))
                 if cd2 then
                     for _, rs in ipairs(strategies) do
@@ -732,7 +732,7 @@ function CB_BuildInlineDropdown(section, s, yOffset, slot, tag, cmd, getSource, 
     local hdr = section:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     hdr:SetPoint("TOPLEFT", section, "TOPLEFT",
         NS.PADDING.section.left + NS.MARGIN.checkbox.left, -yOffset)
-    hdr:SetText(s.header)
+    hdr:SetText(NS.CB_L(s.header))
     local used = NS.MARGIN.checkbox.top + 16 + NS.MARGIN.checkbox.bottom
 
     local dd = NS.CB_CreateDropdown(section, "CleanBotSubDD_" .. cmd .. key .. "_" .. tag, 140)
@@ -754,7 +754,7 @@ function CB_BuildInlineDropdown(section, s, yOffset, slot, tag, cmd, getSource, 
             end
             info.checked = not anyActive
             info.func = function()
-                UIDropDownMenu_SetText(self, noneLabel)
+                UIDropDownMenu_SetText(self, NS.CB_L(noneLabel))
                 CB_ApplyExclusiveSelection(nested, nil, cmd, slot, getSource)
             end
             UIDropDownMenu_AddButton(info)
@@ -770,7 +770,7 @@ function CB_BuildInlineDropdown(section, s, yOffset, slot, tag, cmd, getSource, 
                 info.tooltipText     = ns.desc
                 info.tooltipOnButton = 1
                 info.func            = function()
-                    UIDropDownMenu_SetText(self, ns.name)
+                    UIDropDownMenu_SetText(self, NS.CB_L(ns.name))
                     CB_ApplyExclusiveSelection(nested, ns.field, cmd, slot, getSource)
                 end
                 info.checked = cd[ns.field] == true
@@ -932,7 +932,7 @@ local function CB_BuildColumnGroups(col, groups, cmd, slot, tag, startGi, regist
             do  -- collapsed dropdown text: the active role's name, else the noneLabel ("DPS")
                 local label = group.noneLabel
                 for _, s in ipairs(strategies) do if s.field == initField then label = s.name end end
-                UIDropDownMenu_SetText(dd, label)
+                UIDropDownMenu_SetText(dd, NS.CB_L(label))
             end
 
             UIDropDownMenu_Initialize(dd, function(self)
@@ -947,7 +947,7 @@ local function CB_BuildColumnGroups(col, groups, cmd, slot, tag, startGi, regist
                         info.tooltipOnButton = 1
                     end
                     info.func            = function()
-                        UIDropDownMenu_SetText(self, group.noneLabel)
+                        UIDropDownMenu_SetText(self, NS.CB_L(group.noneLabel))
                         -- Re-add the bot's detected-spec DPS rotation (preserve intent);
                         -- a tank/heal-specced bot gets its off-spec rotation instead
                         -- (its spec strategy IS the rotation, so it must be replaced);
@@ -978,7 +978,7 @@ local function CB_BuildColumnGroups(col, groups, cmd, slot, tag, startGi, regist
                         info.tooltipText     = s.desc
                         info.tooltipOnButton = 1
                         info.func            = function()
-                            UIDropDownMenu_SetText(self, s.name)
+                            UIDropDownMenu_SetText(self, NS.CB_L(s.name))
                             CB_ApplyExclusiveSelection(strategies, s.field, cmd, slot, getSource)
                             for _, sub in pairs(subSections) do sub.section:Hide() end
                             local sec = roleToSection[s.field]
@@ -1080,7 +1080,7 @@ local function CB_BuildColumnGroups(col, groups, cmd, slot, tag, startGi, regist
                     end
                     info.checked      = not anyActive
                     info.func         = function()
-                        UIDropDownMenu_SetText(self, noneLabel)
+                        UIDropDownMenu_SetText(self, NS.CB_L(noneLabel))
                         CB_ApplyExclusiveSelection(strategies, nil, cmd, slot, getSource)
                     end
                     UIDropDownMenu_AddButton(info)
@@ -1095,7 +1095,7 @@ local function CB_BuildColumnGroups(col, groups, cmd, slot, tag, startGi, regist
                         info.tooltipText     = s.desc
                         info.tooltipOnButton = 1
                         info.func            = function()
-                            UIDropDownMenu_SetText(self, s.name)
+                            UIDropDownMenu_SetText(self, NS.CB_L(s.name))
                             CB_ApplyExclusiveSelection(strategies, s.field, cmd, slot, getSource)
                         end
                         info.checked = cd[s.field] == true
@@ -1146,7 +1146,7 @@ local function CB_BuildColumnGroups(col, groups, cmd, slot, tag, startGi, regist
                     info.tooltipText     = o.desc
                     info.tooltipOnButton = 1
                     info.func            = function()
-                        UIDropDownMenu_SetText(self, o.name)        -- immediate feedback
+                        UIDropDownMenu_SetText(self, NS.CB_L(o.name))        -- immediate feedback
                         for _, m in ipairs(CB_SlotTargets(slot)) do
                             NS.CB_SendBotCommand(m.name, group.cmd .. " " .. o.value)
                             local e = CleanBot_PartyBots[m.key]
@@ -1170,11 +1170,11 @@ local function CB_BuildColumnGroups(col, groups, cmd, slot, tag, startGi, regist
                     elseif result ~= v then result = NS.MIXED break end
                 end
                 if result == NS.MIXED then
-                    UIDropDownMenu_SetText(dd, "Mixed")
+                    UIDropDownMenu_SetText(dd, NS.CB_L("Mixed"))
                 elseif result then
-                    UIDropDownMenu_SetText(dd, nameByValue[result] or result)
+                    UIDropDownMenu_SetText(dd, NS.CB_L(nameByValue[result] or result))
                 else
-                    UIDropDownMenu_SetText(dd, "Select\226\128\166")  -- "Select…"
+                    UIDropDownMenu_SetText(dd, NS.CB_L("Select\226\128\166"))  -- "Select…"
                 end
             end
             refresh()
@@ -1326,7 +1326,7 @@ local function CB_BuildClassTabContent(classContent, class, slot, tag)
     if not cs or (not cs.combat and not cs.nonCombat) then
         local label = classContent:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
         NS.CB_AnchorWall(label, classContent, "TOPLEFT")
-        label:SetText("No class-specific options.")
+        label:SetText(NS.CB_L("No class-specific options."))
         return {}
     end
 
@@ -1716,7 +1716,7 @@ local function CB_BindSlot(slot, info)
 
     -- Model + tab button identity
     slot.model:SetUnit(info.unit)
-    slot.tabBtn:SetText("  " .. info.name)
+    slot.tabBtn:SetText(NS.CB_L("  " .. info.name))
     slot.tabIcon:SetTexCoord(unpack(NS.CLASS_ICON_COORDS[info.class] or NS.CLASS_ICON_COORDS["WARRIOR"]))
     slot.tabBtn:Show()
 
@@ -1834,8 +1834,8 @@ SelectBot = function(key, silent)
         -- Match the open entries: class icon + class-colored name on the closed selector.
         local c = RAID_CLASS_COLORS and RAID_CLASS_COLORS[slot.class]
         local label = NS.CB_ClassIconMarkup(slot.class) .. " "
-            .. (c and string.format("|cff%02x%02x%02x%s|r", c.r * 255, c.g * 255, c.b * 255, slot.name) or slot.name)
-        UIDropDownMenu_SetText(NS.botDropdown, label)
+            .. (c and string.format(NS.CB_L("|cff%02x%02x%02x%s|r"), c.r * 255, c.g * 255, c.b * 255, slot.name) or slot.name)
+        UIDropDownMenu_SetText(NS.botDropdown, NS.CB_L(label))
     end
 end
 
@@ -1872,13 +1872,13 @@ NS.CB_ToggleIndividualExpand = function()
 
     if NS.individualExpanded then
         NS.individualStratPanel:Show()
-        NS.individualExpandBtn:SetText("<")
+        NS.individualExpandBtn:SetText(NS.CB_L("<"))
         -- Ensure the active slot's ctrl is visible now that the panel is open.
         local sel = NS.tabList[NS.selectedTabIndex]
         if sel and sel.ctrl then sel.ctrl:Show() end
     else
         NS.individualStratPanel:Hide()
-        NS.individualExpandBtn:SetText(">")
+        NS.individualExpandBtn:SetText(NS.CB_L(">"))
     end
 end
 
@@ -1925,7 +1925,7 @@ NS.CleanBot_RefreshTabs = function()
     end
 
     if NS.individualEmptyLabel then
-        NS.individualEmptyLabel:SetText(#desired == 0 and "No bots found in your party or raid." or "")
+        NS.individualEmptyLabel:SetText(NS.CB_L(#desired == 0 and "No bots found in your party or raid." or ""))
     end
     -- The shared Reset Strategies button only makes sense with a selected bot.
     if NS.individualResetBtn then
@@ -2012,7 +2012,7 @@ NS.CleanBot_RefreshTabs = function()
                     info.value        = d.key
                     info.notCheckable = true
                     local c = RAID_CLASS_COLORS and RAID_CLASS_COLORS[d.class]
-                    if c then info.colorCode = string.format("|cff%02x%02x%02x", c.r * 255, c.g * 255, c.b * 255) end
+                    if c then info.colorCode = string.format(NS.CB_L("|cff%02x%02x%02x"), c.r * 255, c.g * 255, c.b * 255) end
                     info.func = function() SelectBot(d.key) end
                     UIDropDownMenu_AddButton(info)
                 end
@@ -2084,9 +2084,9 @@ NS.CB_SyncRegistry = function(frames, entry, groupCtx)
                 local v = source[s.field]
                 ctrl:SetChecked(v == true)
                 if ctrl.labelFS then
-                    ctrl.labelFS:SetText(ctrl.labelBase
+                    ctrl.labelFS:SetText(NS.CB_L(ctrl.labelBase
                         .. (v == NS.MIXED and " (?)" or "")
-                        .. starSuffix(s.field))
+                        .. starSuffix(s.field)))
                 end
             end
         end
@@ -2117,7 +2117,7 @@ NS.CB_SyncRegistry = function(frames, entry, groupCtx)
                 end
             end
         end
-        UIDropDownMenu_SetText(dd, table.concat(names, ", "))
+        UIDropDownMenu_SetText(dd, NS.CB_L(table.concat(names, ", ")))
         if #names == 1 and trueCount == 1 then
             return activeField, 1
         end
@@ -2129,7 +2129,7 @@ NS.CB_SyncRegistry = function(frames, entry, groupCtx)
         if cf.type == "dropdown" then
             local _, shown = syncDropdown(cf.dd, cf.strategies, cd, cf.noneLabel, cf.groupId)
             if shown == 0 and cf.noneLabel then
-                UIDropDownMenu_SetText(cf.dd, cf.noneLabel)
+                UIDropDownMenu_SetText(cf.dd, NS.CB_L(cf.noneLabel))
             end
 
         elseif cf.type == "checkboxes" then
@@ -2138,7 +2138,7 @@ NS.CB_SyncRegistry = function(frames, entry, groupCtx)
         elseif cf.type == "roleDropdown" then
             local activeRole, shown = syncDropdown(cf.dd, cf.strategies, cd, cf.noneLabel, cf.groupId)
             if shown == 0 and cf.noneLabel then
-                UIDropDownMenu_SetText(cf.dd, cf.noneLabel)
+                UIDropDownMenu_SetText(cf.dd, NS.CB_L(cf.noneLabel))
             end
             -- Exactly one settled rotation token → that role's section. No token (shown 0 on the
             -- Individual path, or 1 noneLabel for an all-DPS group) → the none/DPS section.
@@ -2274,7 +2274,7 @@ NS.CB_SyncTalentSpec = function(key)
             if frames then
                 for _, cf in ipairs(frames) do
                     if cf.whisper and cf.dd then
-                        UIDropDownMenu_SetText(cf.dd, treeName)
+                        UIDropDownMenu_SetText(cf.dd, NS.CB_L(treeName))
                         break
                     end
                 end

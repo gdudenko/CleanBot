@@ -194,7 +194,7 @@ end
 NS.CB_ApplyTitleBar = function(frame, titleText)
     if NS.ElvUI_S then
         local lbl = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-        lbl:SetText(titleText or "")
+        lbl:SetText(NS.CB_L(titleText or ""))
         lbl:SetPoint("CENTER", frame, "TOP", 0, -(NS.TITLE_H / 2))
         lbl:SetJustifyH("CENTER")
         return
@@ -207,7 +207,7 @@ NS.CB_ApplyTitleBar = function(frame, titleText)
     tex:SetHeight(64)
     tex:SetPoint("CENTER", frame, "TOP", 0, -(NS.TITLE_H / 2))
     local lbl = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    lbl:SetText(titleText or "")
+    lbl:SetText(NS.CB_L(titleText or ""))
     lbl:SetPoint("CENTER", frame, "TOP", 0, -2)
     lbl:SetJustifyH("CENTER")
 end
@@ -221,7 +221,7 @@ local CONTAINER_TITLE_OFFSET = 2
 ---@param text  string? Title string to display.
 NS.CB_ApplyContainerTitleLabel = function(frame, text)
     local lbl = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    lbl:SetText(text or "")
+    lbl:SetText(NS.CB_L(text or ""))
     lbl:SetPoint("CENTER", frame, "TOP", 0, -(NS.TITLE_H / 2) - CONTAINER_TITLE_OFFSET)
     lbl:SetJustifyH("CENTER")
 end
@@ -237,7 +237,7 @@ NS.CB_ApplyInventoryTitleBar = function(frame, botName, class, noun)
     noun = noun or "Inventory"
     if NS.ElvUI_S then
         local lbl = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-        lbl:SetText(botName .. "'s " .. noun)
+        lbl:SetText(NS.CB_L(botName .. "'s " .. noun))
         lbl:SetPoint("CENTER", frame, "TOP", 0, -(NS.TITLE_H / 2))
         lbl:SetJustifyH("CENTER")
         return

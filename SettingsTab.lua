@@ -190,7 +190,7 @@ local function buildSampleContent(panel)
 
     local eb = NS.CB_CreateEditBox(section, nil, 180, 20)
     NS.CB_AnchorBelow(eb, chk)
-    eb:SetText("Lorem Ipsum")
+    eb:SetText(NS.CB_L("Lorem Ipsum"))
     eb:SetAutoFocus(false)
     applyDebugOverlay(section, eb)
 
@@ -203,7 +203,7 @@ local function buildSampleContent(panel)
         info.func  = function() UIDropDownMenu_SetSelectedValue(dd, 1) end
         UIDropDownMenu_AddButton(info)
     end)
-    UIDropDownMenu_SetText(dd, "Lorem Ipsum")
+    UIDropDownMenu_SetText(dd, NS.CB_L("Lorem Ipsum"))
     applyDebugOverlay(section, dd)
 
     local sl = NS.CB_CreateSlider(section, "CleanBotSampleSlider" .. gen,
@@ -1011,7 +1011,7 @@ NS.CleanBot_BuildSettingsTab = function()
         }
         for _, o in ipairs(opts) do
             local info = UIDropDownMenu_CreateInfo()
-            info.text    = o.text
+            info.text    = NS.CB_L(o.text)
             info.value   = o.value
             info.checked = (NS.debugBridgeOverride == o.value)
             info.func    = function() NS.CB_SetBridgeOverride(o.value) end
@@ -1058,11 +1058,11 @@ NS.CleanBot_BuildSettingsTab = function()
     -- setter in Debug.lua (so slash-command changes update an open panel).
     NS.CB_RefreshDebugTab = function()
         if NS.debugBridgeOverride == "present" then
-            UIDropDownMenu_SetText(bridgeDD, "On (forced)")
+            UIDropDownMenu_SetText(bridgeDD, NS.CB_L("On (forced)"))
         elseif NS.debugBridgeOverride == "absent" then
-            UIDropDownMenu_SetText(bridgeDD, "Off (forced)")
+            UIDropDownMenu_SetText(bridgeDD, NS.CB_L("Off (forced)"))
         else
-            UIDropDownMenu_SetText(bridgeDD, "Auto (" .. tostring(NS.bridgeState) .. ")")
+            UIDropDownMenu_SetText(bridgeDD, NS.CB_L("Auto (") .. NS.CB_L(tostring(NS.bridgeState)) .. ")")
         end
         simulateCB:SetChecked(NS.debugSimulate and true or false)
         verifyCB:SetChecked(NS.debugVerify and true or false)

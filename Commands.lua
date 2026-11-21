@@ -32,13 +32,13 @@ local function CB_HandleSlash(msg)
 
     else
         NS.CB_Print("unknown command '" .. msg .. "'")
-        print("  /cleanbot                 — toggle window")
-        print("  /cleanbot debug knownbots — show KnownBots debug popup")
-        print("  /cbdebug                  — dump party/cache state to chat")
-        print("  /cbdebug bridge off       — force bridge absent (whisper fallback)")
-        print("  /cbdebug bridge on        — force bridge present (bridge path)")
-        print("  /cbdebug bridge reset     — clear override; follow real handshake")
-        print("  /cbdebug simulate         — toggle simulate mode (print instead of send)")
+        print(NS.CB_L("  /cleanbot                 — toggle window"))
+        print(NS.CB_L("  /cleanbot debug knownbots — show KnownBots debug popup"))
+        print(NS.CB_L("  /cbdebug                  — dump party/cache state to chat"))
+        print(NS.CB_L("  /cbdebug bridge off       — force bridge absent (whisper fallback)"))
+        print(NS.CB_L("  /cbdebug bridge on        — force bridge present (bridge path)"))
+        print(NS.CB_L("  /cbdebug bridge reset     — clear override; follow real handshake"))
+        print(NS.CB_L("  /cbdebug simulate         — toggle simulate mode (print instead of send)"))
     end
 end
 

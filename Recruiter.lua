@@ -177,7 +177,7 @@ local function CB_UpdateRecruitEnabled()
 end
 
 local function CB_SetStatus(text)
-    if statusFS then statusFS:SetText(text or "") end
+    if statusFS then statusFS:SetText(NS.CB_L(text or "")) end
 end
 
 -- ── Class grid (re-laid out when the role changes) ───────────────────────────
@@ -268,7 +268,7 @@ NS.CB_Recruit = function(class, spec, gender, report, label)
 
     local entry = { class = class, spec = spec, prev = prev, done = false, report = report, label = label }
     pending[#pending + 1] = entry
-    report("Recruiting a " .. label .. "…")
+    report(string.format(NS.CB_L("Recruiting a %s…"), label))
 
     -- Give up (and clear the status) if no matching bot joins in time.
     NS.CB_After(RECRUIT_TIMEOUT, function()
@@ -312,7 +312,7 @@ local function CB_OnRosterChanged()
                     if m.name == name then table.remove(members, i); break end
                 end
                 if e.spec then NS.CB_SendBotCommand(name, "talents spec " .. e.spec) end
-                e.report("Recruited " .. name .. " as " .. e.label .. ".")
+                e.report(string.format(NS.CB_L("Recruited %s as %s."), name, e.label))
             end
         end
     end
@@ -390,7 +390,7 @@ local function CB_BuildPanel()
 
     -- Role row (three buttons filling the width).
     local roleLabel = panel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    roleLabel:SetText("Role")
+    roleLabel:SetText(NS.CB_L("Role"))
     NS.CB_AnchorBelow(roleLabel, header)
     local prevRole
     for _, role in ipairs(ROLE_ORDER) do
@@ -404,7 +404,7 @@ local function CB_BuildPanel()
 
     -- Class grid anchor (an invisible marker the grid packs under).
     local classLabel = panel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    classLabel:SetText("Class")
+    classLabel:SetText(NS.CB_L("Class"))
     NS.CB_AnchorBelow(classLabel, roleBtns[ROLE_ORDER[1]])
     panel.classAnchor = CreateFrame("Frame", "CleanBotRecruiterClassAnchor", panel)
     panel.classAnchor:SetSize(1, 1)
@@ -413,7 +413,7 @@ local function CB_BuildPanel()
 
     -- Gender row — anchored a fixed two icon-rows below the class anchor (the grid is at most 2 rows).
     local genderLabel = panel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    genderLabel:SetText("Gender")
+    genderLabel:SetText(NS.CB_L("Gender"))
     genderLabel:SetPoint("TOPLEFT", panel.classAnchor, "TOPLEFT",
         0, -(2 * (ICON + ICON_GAP) + ROW_GAP))
     local prevGen
@@ -435,7 +435,7 @@ local function CB_BuildPanel()
     NS.CB_AnchorBelow(statusFS, recruitBtn)
     statusFS:SetPoint("RIGHT", panel, "RIGHT", -(panel.paddingRight or 8), 0)
     statusFS:SetJustifyH("LEFT")
-    statusFS:SetText("")
+    statusFS:SetText(NS.CB_L(""))
 
     -- Default selections: DPS role + Any gender (a sensible starting state).
     CB_SetGender("ANY")

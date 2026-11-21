@@ -6,6 +6,7 @@
 ## SavedVariables: CleanBot_SavedVars
 
 CleanBot.xml
+Loc.lua
 CleanBot.lua
 Events.lua
 Skinning\ElvUI.lua
@@ -36,3 +37,4 @@ SettingsTab.lua
 Debug.lua
 Commands.lua
 Minimap.lua
+Localize.lua

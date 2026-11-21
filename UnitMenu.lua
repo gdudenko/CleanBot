@@ -24,10 +24,10 @@ local CB_HANDLERS = {
 -- ── 1. Register the menu buttons ────────────────────────────────────────────
 -- `dist = 0` means no distance requirement (the actions route over the bridge /
 -- whisper, not a proximity interaction).
-UnitPopupButtons["CB_SUMMON"]    = { text = "Summon",    dist = 0 }
-UnitPopupButtons["CB_INVENTORY"] = { text = "Inventory", dist = 0 }
-UnitPopupButtons["CB_MANAGE"]    = { text = "Manage",    dist = 0 }
-UnitPopupButtons["CB_QUESTLOG"]  = { text = "Quest Log", dist = 0 }
+UnitPopupButtons["CB_SUMMON"]    = { text = NS.CB_L("Summon"),    dist = 0 }
+UnitPopupButtons["CB_INVENTORY"] = { text = NS.CB_L("Inventory"), dist = 0 }
+UnitPopupButtons["CB_MANAGE"]    = { text = NS.CB_L("Manage"),    dist = 0 }
+UnitPopupButtons["CB_QUESTLOG"]  = { text = NS.CB_L("Quest Log"), dist = 0 }
 
 -- ── 2. Splice the buttons into the party/raid menus in the requested order ──
 -- Inserts are by anchor-key lookup (recomputed each call) so they survive both

@@ -74,7 +74,7 @@ end
 NS.CB_CheckBotVendorRange = function(botName)
     local unit = botName and NS.CB_FindPartyUnit(botName)
     if unit and CheckInteractDistance(unit, 3) then return true end
-    UIErrorsFrame:AddMessage((botName or "Bot") .. " is too far from the vendor.", 1.0, 0.1, 0.1)
+    UIErrorsFrame:AddMessage(NS.CB_L((botName or "Bot") .. " is too far from the vendor."), 1.0, 0.1, 0.1)
     return false
 end
 
@@ -83,7 +83,7 @@ end
 -- dropdown and the "Shopping for" banner. Mirrors the Individual tab (CB_ClassIconMarkup + RAID_CLASS_COLORS).
 local function CB_NameMarkup(class, name)
     local c = class and RAID_CLASS_COLORS and RAID_CLASS_COLORS[class]
-    local colored = c and string.format("|cff%02x%02x%02x%s|r", c.r * 255, c.g * 255, c.b * 255, name) or name
+    local colored = c and string.format(NS.CB_L("|cff%02x%02x%02x%s|r"), c.r * 255, c.g * 255, c.b * 255, name) or name
     return NS.CB_ClassIconMarkup(class) .. " " .. colored
 end
 
@@ -93,7 +93,7 @@ local function CB_RefreshShoppingLabel()
     local e = merchantOpen and NS.vendorEnabled and selectedKey ~= "player"
         and MerchantFrame.selectedTab == 1 and CleanBot_PartyBots[selectedKey]
     if e then
-        shoppingLabel:SetText("Shopping for " .. CB_NameMarkup(e.class, e.name))
+        shoppingLabel:SetText(NS.CB_L("Shopping for " .. CB_NameMarkup(e.class, e.name)))
         shoppingLabel:Show()
     else
         shoppingLabel:Hide()
@@ -291,9 +291,9 @@ local function CB_AcquireTab(key)
             end
             if not nm then return false end
             local c = classToken and RAID_CLASS_COLORS[classToken]
-            tt:AddLine(nm, c and c.r or 1, c and c.g or 1, c and c.b or 1)
+            tt:AddLine(NS.CB_L(nm), c and c.r or 1, c and c.g or 1, c and c.b or 1)
             if key ~= "player" then
-                tt:AddLine("|cFF80CCFFRight-Click to open Inventory|r")
+                tt:AddLine(NS.CB_L("|cFF80CCFFRight-Click to open Inventory|r"))
             end
         end)
 
@@ -308,7 +308,7 @@ local function CB_DropEntry(info, class, name)
     info.text         = NS.CB_ClassIconMarkup(class) .. " " .. name
     info.notCheckable = true
     local c = class and RAID_CLASS_COLORS and RAID_CLASS_COLORS[class]
-    if c then info.colorCode = string.format("|cff%02x%02x%02x", c.r * 255, c.g * 255, c.b * 255) end
+    if c then info.colorCode = string.format(NS.CB_L("|cff%02x%02x%02x"), c.r * 255, c.g * 255, c.b * 255) end
 end
 
 local function CB_BuildDropdown()
@@ -329,7 +329,7 @@ local function CB_BuildDropdown()
         local info = UIDropDownMenu_CreateInfo()
         CB_DropEntry(info, playerClass, "Player")   -- the player's own class icon + color
         info.func = function()
-            CB_SelectKey("player"); UIDropDownMenu_SetText(dropdown, CB_NameMarkup(playerClass, "Player"))
+            CB_SelectKey("player"); UIDropDownMenu_SetText(dropdown, NS.CB_L(CB_NameMarkup(playerClass, "Player")))
         end
         UIDropDownMenu_AddButton(info)
         NS.CB_ForEachGroupMember(function(_, name)
@@ -339,13 +339,13 @@ local function CB_BuildDropdown()
                 local i2 = UIDropDownMenu_CreateInfo()
                 CB_DropEntry(i2, e.class, e.name)
                 i2.func = function()
-                    CB_SelectKey(k); UIDropDownMenu_SetText(dropdown, CB_NameMarkup(e.class, e.name))
+                    CB_SelectKey(k); UIDropDownMenu_SetText(dropdown, NS.CB_L(CB_NameMarkup(e.class, e.name)))
                 end
                 UIDropDownMenu_AddButton(i2)
             end
         end)
     end)
-    UIDropDownMenu_SetText(dropdown, CB_NameMarkup(playerClass, "Player"))
+    UIDropDownMenu_SetText(dropdown, NS.CB_L(CB_NameMarkup(playerClass, "Player")))
     dropdown:Show()
     invBtn:Show()
 end

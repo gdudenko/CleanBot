@@ -584,7 +584,7 @@ end
 local function CB_ClassColoredName(class)
     local display = (NS.CLASS_DISPLAY and NS.CLASS_DISPLAY[class]) or class
     local c = RAID_CLASS_COLORS and RAID_CLASS_COLORS[class]
-    if c then return string.format("|cff%02x%02x%02x%s|r", c.r * 255, c.g * 255, c.b * 255, display) end
+    if c then return string.format(NS.CB_L("|cff%02x%02x%02x%s|r"), c.r * 255, c.g * 255, c.b * 255, display) end
     return display
 end
 
@@ -595,8 +595,7 @@ end
 local function CB_SelectGroupClass(class)
     selectedClass = class
     if classDropdown then
-        UIDropDownMenu_SetText(classDropdown,
-            NS.CB_ClassIconMarkup(class) .. " " .. CB_ClassColoredName(class))
+        UIDropDownMenu_SetText(classDropdown, NS.CB_L(NS.CB_ClassIconMarkup(class) .. " " .. CB_ClassColoredName(class)))
     end
     CB_SelectGroupInnerTab("class")
 end
@@ -637,7 +636,7 @@ local function CB_LayoutGroupInnerTabs(classesPresent)
     sharedClassTab:Show()
 
     if multi then
-        sharedClassTab:SetText("Class")
+        sharedClassTab:SetText(NS.CB_L("Class"))
         UIDropDownMenu_Initialize(classDropdown, function()
             for _, class in ipairs(presentClasses) do
                 local info        = UIDropDownMenu_CreateInfo()
@@ -646,15 +645,14 @@ local function CB_LayoutGroupInnerTabs(classesPresent)
                 info.value        = class
                 info.notCheckable = true
                 local c = RAID_CLASS_COLORS and RAID_CLASS_COLORS[class]
-                if c then info.colorCode = string.format("|cff%02x%02x%02x", c.r * 255, c.g * 255, c.b * 255) end
+                if c then info.colorCode = string.format(NS.CB_L("|cff%02x%02x%02x"), c.r * 255, c.g * 255, c.b * 255) end
                 info.func         = function() CB_SelectGroupClass(class) end
                 UIDropDownMenu_AddButton(info)
             end
         end)
-        UIDropDownMenu_SetText(classDropdown,
-            NS.CB_ClassIconMarkup(selectedClass) .. " " .. CB_ClassColoredName(selectedClass))
+        UIDropDownMenu_SetText(classDropdown, NS.CB_L(NS.CB_ClassIconMarkup(selectedClass) .. " " .. CB_ClassColoredName(selectedClass)))
     else
-        sharedClassTab:SetText((NS.CLASS_DISPLAY and NS.CLASS_DISPLAY[selectedClass]) or selectedClass)
+        sharedClassTab:SetText(NS.CB_L((NS.CLASS_DISPLAY and NS.CLASS_DISPLAY[selectedClass]) or selectedClass))
     end
 
     -- If the Class tab is active, re-show content for the (possibly new) class.
@@ -676,7 +674,7 @@ local function CB_ManagingText(managed)
     local parts = {}
     for _, m in ipairs(managed) do
         local c = RAID_CLASS_COLORS and RAID_CLASS_COLORS[m.class]
-        local name = c and string.format("|cff%02x%02x%02x%s|r", c.r * 255, c.g * 255, c.b * 255, m.name) or m.name
+        local name = c and string.format(NS.CB_L("|cff%02x%02x%02x%s|r"), c.r * 255, c.g * 255, c.b * 255, m.name) or m.name
         parts[#parts + 1] = NS.CB_ClassIconMarkup(m.class) .. " " .. name
     end
     return "Managing: " .. table.concat(parts, ", ")
@@ -714,7 +712,7 @@ local function CB_ApplyMemberSelection()
         -- Nothing managed: hide the strategy controls, show the prompt — which
         -- depends on whether a group is even selected.
         local anyGroup = selectedGroupValues and #selectedGroupValues > 0
-        emptyStratLabel:SetText(anyGroup and "Select a Bot to Begin" or "Select a Group to Begin")
+        emptyStratLabel:SetText(NS.CB_L(anyGroup and "Select a Bot to Begin" or "Select a Group to Begin"))
         managingLabel:Hide()
         groupContainer:Hide()
         emptyStratLabel:Show()
@@ -722,7 +720,7 @@ local function CB_ApplyMemberSelection()
     end
 
     emptyStratLabel:Hide()
-    managingLabel:SetText(CB_ManagingText(managed))
+    managingLabel:SetText(NS.CB_L(CB_ManagingText(managed)))
     managingLabel:Show()
     groupContainer:Show()
 
@@ -802,7 +800,7 @@ NS.CB_RefreshGroupTab = function()
 
     local haveBots = NS.desiredBots and #NS.desiredBots > 0
     if not haveBots then
-        groupEmptyLabel:SetText("No bots found in your party or raid.")
+        groupEmptyLabel:SetText(NS.CB_L("No bots found in your party or raid."))
         listsRegion:Hide()
         groupStratPanel:Hide()
         -- Empty roster is the one case the Group tab follows the saved
@@ -813,7 +811,7 @@ NS.CB_RefreshGroupTab = function()
         return
     end
 
-    groupEmptyLabel:SetText("")
+    groupEmptyLabel:SetText(NS.CB_L(""))
     listsRegion:Show()
     groupStratPanel:Show()
     if NS.activeTopTabIndex == 3 and NS.COLLAPSED_WIDTH then
@@ -904,7 +902,7 @@ NS.CleanBot_BuildGroupTab = function()
 
     groupEmptyLabel = panel:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     groupEmptyLabel:SetPoint("TOP", panel, "TOP", 0, -(NS.BOT_BAR_H + 20))
-    groupEmptyLabel:SetText("")
+    groupEmptyLabel:SetText(NS.CB_L(""))
 
     -- Content area: the Group tab has no per-bot selector row, so content
     -- starts at the panel's own top padding (unlike individualContent's
@@ -1018,7 +1016,7 @@ NS.CleanBot_BuildGroupTab = function()
     -- Empty state shown when nothing is selected (replaces the controls).
     emptyStratLabel = groupStratPanel:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     emptyStratLabel:SetPoint("CENTER", groupStratPanel, "CENTER", 0, 0)
-    emptyStratLabel:SetText("Select a Bot to Begin")
+    emptyStratLabel:SetText(NS.CB_L("Select a Bot to Begin"))
     emptyStratLabel:Hide()
 
     groupCtrl = NS.CB_CreatePanel(groupStratPanel, "CleanBotGroupCtrl", 3, "panel")
@@ -1037,10 +1035,10 @@ NS.CleanBot_BuildGroupTab = function()
         legendBottom:SetPoint("BOTTOMLEFT", groupContainer, "BOTTOMLEFT",
             (groupCtrl.paddingLeft or 0), (groupCtrl.paddingBottom or 0))
     end)
-    legendBottom:SetText("? - Strategy value is different for some characters")
+    legendBottom:SetText(NS.CB_L("? - Strategy value is different for some characters"))
     local legendTop = groupContainer:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     legendTop:SetPoint("BOTTOMLEFT", legendBottom, "TOPLEFT", 0, 2)
-    legendTop:SetText("* - Strategy is not available for some characters")
+    legendTop:SetText(NS.CB_L("* - Strategy is not available for some characters"))
     local GROUP_LEGEND_H = NS.BOT_BAR_H
 
     -- Inner tab bar + content frames mirror CB_BuildBotContent's scaffolding.

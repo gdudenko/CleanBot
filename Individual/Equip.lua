@@ -27,7 +27,7 @@ local NS = CleanBotNS
 ---@param info     table   UIDropDownMenu button info table to populate and add.
 ---@param itemLink string  The item link the Wowhead entry should point to.
 NS.CB_AddWowheadMenuButton = function(info, itemLink)
-    info.text         = "Open on Wowhead"
+    info.text         = NS.CB_L("Open on Wowhead")
     info.notCheckable = true
     info.func         = function()
         local itemId = strmatch(itemLink, "item:(%d+)")
@@ -255,7 +255,7 @@ NS.CB_CreateEquipSlots = function(slot, model)
             if self.itemLink then
                 tt:SetHyperlink(self.itemLink)
             else
-                tt:AddLine(self.slotName, 1, 1, 1)
+                tt:AddLine(NS.CB_L(self.slotName), 1, 1, 1)
             end
 
             if unit and UnitExists(unit) and self.slotId and self.itemLink then
@@ -531,13 +531,13 @@ NS.CB_RefreshXPBar = function(slot)
     if level and level >= maxLevel then
         xp.rested:Hide()
         xp.fill:SetValue(100)
-        xp.label:SetText("Max")
+        xp.label:SetText(NS.CB_L("Max"))
         xp.tooltipText = "Max level (" .. level .. ")"
         return
     end
 
     xp.rested:Show()
-    xp.label:SetText(level and level > 0 and tostring(level) or "")
+    xp.label:SetText(NS.CB_L(level and level > 0 and tostring(level) or ""))
 
     local entry = slot.key and CleanBot_PartyBots[slot.key]
     local cur, rest

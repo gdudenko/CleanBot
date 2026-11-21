@@ -26,9 +26,9 @@ end
 ---@param onCancel fun(self:table, data:any, reason:string)?  Called when the user clicks No.
 NS.CB_RegisterConfirmPopup = function(key, text, onAccept, onCancel)
     StaticPopupDialogs[key] = {
-        text         = text,
-        button1      = "Yes",
-        button2      = "No",
+        text         = NS.CB_L(text),
+        button1      = NS.CB_L("Yes"),
+        button2      = NS.CB_L("No"),
         timeout      = 0,
         whileDead    = true,
         hideOnEscape = true,
@@ -48,9 +48,9 @@ end
 ---@param onAccept  fun(value:string)  Called with the entered text on confirm.
 NS.CB_RegisterEditPopup = function(key, text, onAccept)
     StaticPopupDialogs[key] = {
-        text         = text,
-        button1      = "OK",
-        button2      = "Cancel",
+        text         = NS.CB_L(text),
+        button1      = NS.CB_L("OK"),
+        button2      = NS.CB_L("Cancel"),
         hasEditBox   = 1,
         timeout      = 0,
         whileDead    = true,
@@ -77,7 +77,7 @@ local CB_RegisterEditPopup = NS.CB_RegisterEditPopup
 -- do it. The caption width is bumped in OnShow before Resize recomputes the height.
 StaticPopupDialogs["CLEANBOT_COPY"] = {
     text           = "%s",
-    button1        = "Close",
+    button1        = NS.CB_L("Close"),
     -- hasWideEditBox only takes effect when hasEditBox is also set: the framework gates the
     -- whole edit-box show block on hasEditBox, then picks the wide box inside it.
     hasEditBox     = 1,
@@ -109,12 +109,12 @@ StaticPopupDialogs["CLEANBOT_COPY"] = {
             eb.cbOrigOTC  = eb:GetScript("OnTextChanged")
             eb:SetScript("OnTextChanged", function(box)
                 if box.cbCopyText and box:GetText() ~= box.cbCopyText then
-                    box:SetText(box.cbCopyText)
+                    box:SetText(NS.CB_L(box.cbCopyText))
                     box:HighlightText()
                 end
             end)
             -- Fill + select the copy text (Ctrl+C copies it all even if it scrolls).
-            eb:SetText(data or "")
+            eb:SetText(NS.CB_L(data or ""))
             eb:SetFocus()
             eb:HighlightText()
             -- The wide box is CENTER-anchored by default, which a multi-line caption
@@ -160,6 +160,8 @@ NS.CB_ShowCopyPopup = function(opts)
     if opts.body and opts.body ~= "" then
         display = (display ~= "" and (display .. "\n\n") or "") .. opts.body
     end
+    -- Title and body may be assembled from several lines; translate each line on its own.
+    display = display:gsub("[^\n]+", function(line) return NS.CB_L(line) end)
     StaticPopup_Show("CLEANBOT_COPY", display, nil, opts.copyText)
 end
 
@@ -237,10 +239,12 @@ NS.CB_RegisterConfirmPopup("CLEANBOT_LINK_ACCOUNT_HASKEY",
         -- (setKey targets the logged-in account), so show the command in a copyable box.
         if reason == "clicked" then
             NS.CB_ShowCopyPopup({
-                title    = "Security key required",
-                body     = "Account |cffffd200" .. tostring(data) .. "|r needs a security key before it can be linked.\n"
-                        .. "Copy the following command (Ctrl + C), log into the account, "
-                        .. "paste the command into the chat (Ctrl + V), then come back here and use the key you entered.",
+                title    = NS.CB_L("Security key required"),
+                body     = string.format(
+                               NS.CB_L("Account |cffffd200%s|r needs a security key before it can be linked."),
+                               tostring(data)) .. "\n"
+                        .. NS.CB_L("Copy the following command (Ctrl + C), log into the account, "
+                                .. "paste the command into the chat (Ctrl + V), then come back here and use the key you entered."),
                 copyText = ".playerbots account setKey <key>",
             })
         end
@@ -301,12 +305,12 @@ NS.CleanBot_BuildManageTab = function()
         local dd = NS.CB_CreateDropdown(parent, frameName, 150)
         NS.CB_AnchorAhead(dd, anchorBtn)
         UIDropDownMenu_Initialize(dd, function(self)
-            UIDropDownMenu_SetText(dd, "")
+            UIDropDownMenu_SetText(dd, NS.CB_L(""))
             onSelect(nil)
             local items = provider()
             if not items or #items == 0 then
                 local info        = UIDropDownMenu_CreateInfo()
-                info.text         = emptyText
+                info.text         = NS.CB_L(emptyText)
                 info.notCheckable = 1
                 UIDropDownMenu_AddButton(info)
                 return
@@ -316,7 +320,7 @@ NS.CleanBot_BuildManageTab = function()
                 info.text   = name
                 info.value  = name
                 info.func   = function()
-                    UIDropDownMenu_SetText(self, name)
+                    UIDropDownMenu_SetText(self, NS.CB_L(name))
                     onSelect(name)
                 end
                 UIDropDownMenu_AddButton(info)
@@ -870,8 +874,8 @@ NS.CleanBot_BuildManageTab = function()
                     break
                 end
             end
-            UIDropDownMenu_SetText(unlinkDD, "")
-            UIDropDownMenu_SetText(altDD, "")
+            UIDropDownMenu_SetText(unlinkDD, NS.CB_L(""))
+            UIDropDownMenu_SetText(altDD, NS.CB_L(""))
             selectedUnlinkAccount = nil
             selectedAltAccount    = nil
         end)
